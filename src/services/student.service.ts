@@ -11,9 +11,28 @@ const StudentSchema = new Schema({
     modifiedAt: { type: Date, default: Date.now }
 });
 
-export const StudentDocument = mongoose.model<IStudent>("Student", StudentSchema, "Students");
+export const StudentDocument: mongoose.Model<Student> = mongoose.model<Student>("Student", StudentSchema, "Students");
 
-export interface IStudent extends mongoose.Document {
+export interface Student extends mongoose.Document {
+    name: string;
+    phone: string;
+    email: string;
+    createdAt: Date;
+    modifiedAt: Date;
+}
+
+const TeacherSchema = new Schema({
+    name: { type: String, index: true },
+    phone: { type: String, index: true },
+    email: { type: String, index: true },
+    createdAt: { type: Date, default: Date.now },
+    modifiedAt: { type: Date, default: Date.now }
+});
+
+export const TeacherDocument: mongoose.Model<Teacher> = mongoose.model<Teacher>("Teacher", TeacherSchema, "Teachers");
+
+
+export interface Teacher extends mongoose.Document {
     name: string;
     phone: string;
     email: string;
@@ -22,7 +41,7 @@ export interface IStudent extends mongoose.Document {
 }
 
 export class StudentViewModel {
-    constructor(s: IStudent) {
+    constructor(s: Student) {
         this.id = s.id;
         this.name = s.name;
         this.phone = s.phone;
@@ -48,14 +67,9 @@ export class StudentRequestModel {
     modifiedAt: Date | undefined;
 }
 
-const getAll = async (): Promise<IStudent[]> => {
-    const students: IStudent[] = await StudentDocument.find().exec();
+const getAll = async (): Promise<Student[]> => {
+    const students: Student[] = await StudentDocument.find().exec();
     return students;
-}
-
-const save = async (student: IStudent): Promise<any> => {
-    const saved: IStudent = await student.save();
-    return saved.phone;
 }
 
 
@@ -65,19 +79,29 @@ export const getStudents = async (): Promise<StudentViewModel[]> => {
     return vms;
 }
 
-export const saveStudent = async (payload: StudentRequestModel): Promise<string> => {
+
+
+// export const saveStudent = async (payload: StudentRequestModel): Promise<string> => {
+//     const saved = await save<typeof StudentDocument>(StudentDocument, payload);
+//     return saved.id;
+// }
+
+
+
+export const saveGenericModel = async <T extends mongoose.Document>(payload: T, db: mongoose.Model<T>): Promise<string> => {
+    const saved = await save<typeof db>(db, payload);
+    return saved.id;
+}
+
+async function save<T extends mongoose.Model<any>>(db: T, params: mongoose.Document) {
     let _id = new mongoose.Types.ObjectId();
-    const l = {
+    const model = {
+        ...params,
         id: _id,
-        name: payload.name,
-        phone: payload.phone,
-        email: payload.email,
         createdAt: new Date(),
         modifiedAt: new Date()
     };
 
-    let s = new StudentDocument(l);
-    const saved: IStudent = await s.save();
-    return saved.id;
+    const saved = await db.create(model);
+    return saved;
 }
-

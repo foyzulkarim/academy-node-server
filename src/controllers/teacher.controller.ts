@@ -7,20 +7,23 @@ const getHandler = async (req: Request, res: Response) => {
     res.send(students);
 };
 
+type T = service.Teacher;
+const Doc = service.TeacherDocument;
+
 const postHandler = async (req: Request, res: Response) => {
-    const id = await service.saveGenericModel<service.StudentRequestModel, service.Student>(req.body as service.StudentRequestModel, service.StudentDocument);    
-    res.send(`student id : \n${id}`);
+    const id = await service.saveGenericModel<T>(req.body, Doc);
+    res.send(`teacher id : \n${id}`);
 };
 
 export const routes: IRoute[] = [
     {
         http: 'get',
-        path: '/student',
+        path: '/teacher',
         handler: getHandler
     },
     {
         http: 'post',
-        path: '/student',
+        path: '/teacher',
         handler: postHandler
     }
 ];

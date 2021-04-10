@@ -1,5 +1,6 @@
 import express, { Request, Response, Router } from "express";
 import { routes as studentRoutes } from "./student.controller";
+import { routes as teacherRoutes } from "./teacher.controller";
 
 export type Handler = (req: Request, res: Response) => void;
 
@@ -27,7 +28,8 @@ const routes: IRoute[] = [
         path: '/health',
         handler: healthHandler
     },
-    ...studentRoutes
+    ...studentRoutes,
+    ...teacherRoutes
 ];
 
 
