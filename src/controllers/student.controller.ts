@@ -3,13 +3,16 @@ import { Request, Response } from "express";
 import * as service from "../services/student.service";
 
 const getHandler = async (req: Request, res: Response) => {
-    const students = await service.getStudents();
-    res.send(students);
+    const models = await service.getGeneric<T>(Doc);
+    res.send(models);
 };
 
+type T = service.Student;
+const Doc = service.StudentDocument;
+
 const postHandler = async (req: Request, res: Response) => {
-    const id = await service.saveGenericModel<service.StudentRequestModel, service.Student>(req.body as service.StudentRequestModel, service.StudentDocument);    
-    res.send(`student id : \n${id}`);
+    const id = await service.saveGenericModel<T>(req.body, Doc);
+    res.send(`teacher id : \n${id}`);
 };
 
 export const routes: IRoute[] = [

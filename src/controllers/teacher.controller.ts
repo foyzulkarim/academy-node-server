@@ -3,8 +3,8 @@ import { Request, Response } from "express";
 import * as service from "../services/student.service";
 
 const getHandler = async (req: Request, res: Response) => {
-    const students = await service.getStudents();
-    res.send(students);
+    const models = await service.getGeneric<T>(Doc);
+    res.send(models);
 };
 
 type T = service.Teacher;

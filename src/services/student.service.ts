@@ -105,3 +105,9 @@ async function save<T extends mongoose.Model<any>>(db: T, params: mongoose.Docum
     const saved = await db.create(model);
     return saved;
 }
+
+
+export const getGeneric = async <T extends mongoose.Document>(db: mongoose.Model<T>): Promise<T[]> => {
+    const models: T[] = await db.find().exec();
+    return models;
+}
