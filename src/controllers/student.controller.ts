@@ -1,14 +1,17 @@
 import { IRoute } from "./routes";
 import { Request, Response } from "express";
-import { getStudents } from "../services/student.service";
+import * as service from "../services/student.service";
 
 const getHandler = async (req: Request, res: Response) => {
-    const students = await getStudents();
+    const students = await service.getAll(collection);
     res.send(students);
 };
 
-const postHandler = (req: Request, res: Response) => {
-    res.send(`student\n${req.method} at \n` + new Date());
+const collection = service.StudentDocument;
+
+const postHandler = async (req: Request, res: Response) => {
+    let savedId = await service.save(collection, req.body);
+    res.send(`student\n${savedId} \n`);
 };
 
 export const routes: IRoute[] = [
