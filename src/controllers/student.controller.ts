@@ -2,8 +2,10 @@ import { IRoute } from "./routes";
 import { Request, Response } from "express";
 import * as service from "../services/student.service";
 
+
 const getHandler = async (req: Request, res: Response) => {
-    const students = await service.getAll(collection);
+    const vm = new service.StudentViewModel();
+    const students = await service.getAll(collection, vm);
     res.send(students);
 };
 
